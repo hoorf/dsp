@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: dsp-server
+server:
+  port: 3333
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka/
+
+logging:
+  level:
+    com.github.ruifengho: DEBUG
+
+dsp:
+  heart: 50       

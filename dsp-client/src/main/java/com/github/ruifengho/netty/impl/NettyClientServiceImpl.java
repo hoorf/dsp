@@ -31,6 +31,7 @@ public class NettyClientServiceImpl implements NettyClientService {
 
 	private static final Logger log = LoggerFactory.getLogger(NettyClientServiceImpl.class);
 
+
 	@Override
 	public void connect() {
 
@@ -40,6 +41,10 @@ public class NettyClientServiceImpl implements NettyClientService {
 		try {
 
 			workerGroup = new NioEventLoopGroup();
+			int heart = Constants.config.getHeart();
+			String host = Constants.config.getHost();
+			int port = Constants.config.getPort();
+
 			Bootstrap boot = new Bootstrap();
 			boot.group(workerGroup);
 			boot.channel(NioSocketChannel.class);
@@ -47,15 +52,14 @@ public class NettyClientServiceImpl implements NettyClientService {
 			boot.handler(new ChannelInitializer<SocketChannel>() {
 				@Override
 				protected void initChannel(SocketChannel ch) throws Exception {
-					ch.pipeline().addLast("timeout",
-							new IdleStateHandler(Constants.HEART, Constants.HEART, Constants.HEART, TimeUnit.SECONDS));
+					ch.pipeline().addLast("timeout", new IdleStateHandler(heart, heart, heart, TimeUnit.SECONDS));
 					ch.pipeline().addLast(new LengthFieldPrepender(4, false));
 					ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
 				}
 
 			});
 			log.info("connect to dsp-server");
-			ChannelFuture channelFuture = boot.connect(Constants.HOST, Constants.PORT);
+			ChannelFuture channelFuture = boot.connect(host, port);
 			log.info("connect success");
 			// 断线重连
 			channelFuture.addListener(new ChannelFutureListener() {

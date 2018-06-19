@@ -13,4 +13,9 @@ logging:
     com.github.ruifengho: DEBUG
 
 dsp:
-  heart: 50       
+  transaction:
+    netty:
+      host: 127.0.0.1
+      heart: 5
+      port: 666
+      delaytime: 3      

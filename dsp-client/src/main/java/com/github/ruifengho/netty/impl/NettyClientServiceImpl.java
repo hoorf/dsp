@@ -4,10 +4,13 @@ import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.github.ruifengho.config.ConfigLoader;
 import com.github.ruifengho.config.Constants;
 import com.github.ruifengho.netty.NettyClientService;
+import com.github.ruifengho.netty.handler.DspClientConnectHandler;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -31,6 +34,8 @@ public class NettyClientServiceImpl implements NettyClientService {
 
 	private static final Logger log = LoggerFactory.getLogger(NettyClientServiceImpl.class);
 
+	@Autowired
+	private ConfigLoader configLoader;
 
 	@Override
 	public void connect() {
@@ -38,12 +43,18 @@ public class NettyClientServiceImpl implements NettyClientService {
 		if (isStarting) {
 			return;
 		}
+
+		// 加载配置
+		configLoader.load();
+		int heart = Constants.config.getHeart();
+		String host = Constants.config.getHost();
+		int port = Constants.config.getPort();
+
+		DspClientConnectHandler handler = new DspClientConnectHandler();
+
 		try {
 
 			workerGroup = new NioEventLoopGroup();
-			int heart = Constants.config.getHeart();
-			String host = Constants.config.getHost();
-			int port = Constants.config.getPort();
 
 			Bootstrap boot = new Bootstrap();
 			boot.group(workerGroup);
@@ -55,6 +66,7 @@ public class NettyClientServiceImpl implements NettyClientService {
 					ch.pipeline().addLast("timeout", new IdleStateHandler(heart, heart, heart, TimeUnit.SECONDS));
 					ch.pipeline().addLast(new LengthFieldPrepender(4, false));
 					ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
+					ch.pipeline().addLast(handler);
 				}
 
 			});

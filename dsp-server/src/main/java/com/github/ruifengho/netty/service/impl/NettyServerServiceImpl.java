@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.github.ruifengho.config.ConfigReader;
+import com.github.ruifengho.netty.handler.DspServerHandler;
 import com.github.ruifengho.netty.service.NettyServerService;
+import com.github.ruifengho.netty.service.NettyService;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
@@ -37,6 +39,8 @@ public class NettyServerServiceImpl implements NettyServerService {
 
 	@Autowired
 	private ConfigReader configReader;
+	@Autowired
+	private NettyService nettyService;
 
 	@Override
 	public synchronized void start() {
@@ -47,6 +51,7 @@ public class NettyServerServiceImpl implements NettyServerService {
 			int heart = configReader.getHeart();
 			int port = configReader.getPort();
 			String host = configReader.getHost();
+			DspServerHandler handler = new DspServerHandler(threadpool, nettyService);
 
 			ServerBootstrap boot = new ServerBootstrap();
 			boot.group(bossGroup, workerGroup);
@@ -60,6 +65,7 @@ public class NettyServerServiceImpl implements NettyServerService {
 					sc.pipeline().addLast("timeout", new IdleStateHandler(heart, heart, heart, TimeUnit.SECONDS));
 					sc.pipeline().addLast(new LengthFieldPrepender(4, false));
 					sc.pipeline().addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
+					sc.pipeline().addLast(handler);
 
 				}
 			});

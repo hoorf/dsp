@@ -1,9 +1,17 @@
 package com.github.ruifengho.modal;
 
-public class TxTask {
+import com.github.ruifengho.task.Task;
+
+public class TxTask extends Task {
 
 	private String groupId;
-	
-	private String taskId;
+
+	public String getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(String groupId) {
+		this.groupId = groupId;
+	}
 
 }

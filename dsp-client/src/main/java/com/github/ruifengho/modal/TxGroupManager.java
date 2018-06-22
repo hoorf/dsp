@@ -25,6 +25,26 @@ public class TxGroupManager {
 		return instance;
 	}
 
+	public TxGroup createTxGroup(String groupId) {
+		TxGroup txGroup = new TxGroup();
+		txGroup.setGroupId(groupId);
+		putTxGroup(txGroup);
+		return txGroup;
+	}
+
+	public void removeGroup(String groupId) {
+		TxGroup txGroup = map.get(groupId);
+		if (txGroup != null) {
+			while (txGroup.hasRunningTxTask()) {
+				try {
+					Thread.sleep(1);
+				} catch (InterruptedException e) {
+				}
+			}
+			map.remove(groupId);
+		}
+	}
+
 	public TxGroup getTxGroup(String groupId) {
 		return map.get(groupId);
 	}

@@ -6,14 +6,15 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class Task {
 
-	private String key;
+	private String taskId;
 
-	// 是否有执行任务
-	private boolean hasExecute = false;
+	private volatile boolean isExecuted = false;
 
-	private boolean isAwait = false;
+	private volatile boolean isAwait = false;
 
-	private boolean isNotify = false;
+	private volatile boolean isNotify = false;
+
+	private volatile boolean isRunning = false;
 
 	private TaskRunner execute;
 
@@ -25,114 +26,55 @@ public class Task {
 
 	private Condition condition = lock.newCondition();
 
-	public synchronized Object excute(TaskRunner runner) {
-		execute = runner;
-		hasExecute = true;
+	public void signalTask(TaskRunner runner) {
 
-		excuteSignalTask();
-
-		while (execute != null && !Thread.currentThread().isInterrupted()) {
-			taskSleep();
-		}
-
-		return resultObj;
-
-	}
-
-	public void excuteSignalTask() {
-		while (!isAwait && !Thread.currentThread().isInterrupted()) {
-			taskSleep();
-		}
+		lock.lock();
 		try {
-			lock.lock();
+			this.execute = runner;
+			this.isExecuted = false;
 			condition.signal();
+			isNotify = true;
 		} finally {
 			lock.unlock();
 		}
-
 	}
 
 	public void signalTask() {
-		signalTask(null);
-	}
-
-	public void signalTask(TaskRunner runner) {
-		// 有执行任务，等待它完成再执行
-		while (hasExecute && !Thread.currentThread().isInterrupted()) {
-			taskSleep();
-		}
-		// 当前正在执行的，不往下执行
-		while (!isAwait && !Thread.currentThread().isInterrupted()) {
-			taskSleep();
-		}
-		// 当前task没执行
+		lock.lock();
 		try {
-
-			lock.lock();
-			isNotify = true;
-			if (runner != null) {
-
-				try {
-					runner.run();
-				} catch (Throwable e) {
-				}
-			}
 			condition.signal();
+			isNotify = true;
 		} finally {
 			lock.unlock();
 		}
-
 	}
 
-	private void waitTask() throws Throwable {
-		condition.await();
-		if (hasExecute) {
-			try {
-				resultObj = execute.run();
-			} catch (Throwable e) {
-				resultObj = e;
-			}
-			hasExecute = false;
-			execute = null;
-			waitTask();
-		}
-	}
-
-	/**
-	 * 执行后等待
-	 */
-	public void awaitTask() {
+	public void waitTask() throws Throwable {
+		lock.lock();
 		try {
-			lock.lock();
 			isAwait = true;
-			try {
+			isNotify = false;
+			condition.await();
+			if (execute != null && isExecuted == false) {
+				isAwait = false;
+				isRunning = true;
+				try {
+					resultObj = execute.run();
+				} catch (Throwable e) {
+					resultObj = e;
+				}
+				isRunning = false;
+				isExecuted = true;
+				execute = null;
 				waitTask();
-			} catch (Throwable e) {
 			}
 		} finally {
 			lock.unlock();
 		}
-
 	}
 
-	private void taskSleep() {
-		try {
-			Thread.sleep(1);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public String getKey() {
-		return key;
-	}
-
-	public void setKey(String key) {
-		this.key = key;
-	}
-
-	public boolean isHasExecute() {
-		return hasExecute;
+	public boolean isRunning() {
+		return isRunning;
 	}
 
 	public boolean isAwait() {
@@ -145,6 +87,22 @@ public class Task {
 
 	public int getState() {
 		return state;
+	}
+
+	public String getTaskId() {
+		return taskId;
+	}
+
+	public void setTaskId(String taskId) {
+		this.taskId = taskId;
+	}
+
+	public Object getResultObj() {
+		return resultObj;
+	}
+
+	public void setState(int state) {
+		this.state = state;
 	}
 
 }

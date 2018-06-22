@@ -1,3 +1,8 @@
 dsp:
   server:
     address: http://127.0.0.1:3333/dsp
+    
+    
+logging:
+  level:
+    com.github.ruifengho: DEBUG

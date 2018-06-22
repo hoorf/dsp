@@ -2,15 +2,30 @@ package com.github.ruifengho.modal;
 
 public class DspAction {
 
+	private String type;
+
 	private String action;
-	private String key;
+	private String groupId;
 	private String params;
 
-	public DspAction(String action, String key, String params) {
+	public DspAction() {
 		super();
+	}
+
+	public DspAction(String type, String action, String groupId, String params) {
+		super();
+		this.type = type;
 		this.action = action;
-		this.key = key;
+		this.groupId = groupId;
 		this.params = params;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public String getAction() {
@@ -21,12 +36,12 @@ public class DspAction {
 		this.action = action;
 	}
 
-	public String getKey() {
-		return key;
+	public String getGroupId() {
+		return groupId;
 	}
 
-	public void setKey(String key) {
-		this.key = key;
+	public void setGroupId(String groupId) {
+		this.groupId = groupId;
 	}
 
 	public String getParams() {

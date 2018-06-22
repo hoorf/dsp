@@ -11,9 +11,13 @@ import com.github.ruifengho.netty.service.ActionService;
 import com.github.ruifengho.netty.service.NettyService;
 import com.github.ruifengho.util.SocketUtils;
 
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
 
+@Sharable
 public class DspServerHandler extends ChannelInboundHandlerAdapter {
 
 	private static final Logger log = LoggerFactory.getLogger(DspServerHandler.class);
@@ -56,15 +60,23 @@ public class DspServerHandler extends ChannelInboundHandlerAdapter {
 	}
 
 	@Override
+	public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+		ctx.flush();
+	}
+
+	@Override
 	public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-		// TODO Auto-generated method stub
-		super.userEventTriggered(ctx, evt);
+		if (IdleStateEvent.class.isAssignableFrom(evt.getClass())) {
+			IdleStateEvent event = (IdleStateEvent) evt;
+			if (event.state() == IdleState.READER_IDLE) {
+				ctx.close();
+			}
+		}
 	}
 
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-		// TODO Auto-generated method stub
-		super.exceptionCaught(ctx, cause);
+		cause.printStackTrace();
 	}
 
 }

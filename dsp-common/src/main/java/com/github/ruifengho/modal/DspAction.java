@@ -1,23 +1,24 @@
 package com.github.ruifengho.modal;
 
+import com.alibaba.fastjson.JSONObject;
+
 public class DspAction {
 
 	private String type;
 
 	private String action;
 	private String groupId;
-	private String params;
+	private JSONObject params = new JSONObject();
 
 	public DspAction() {
 		super();
 	}
 
-	public DspAction(String type, String action, String groupId, String params) {
+	public DspAction(String type, String action, String groupId) {
 		super();
 		this.type = type;
 		this.action = action;
 		this.groupId = groupId;
-		this.params = params;
 	}
 
 	public String getType() {
@@ -44,12 +45,20 @@ public class DspAction {
 		this.groupId = groupId;
 	}
 
-	public String getParams() {
+	public JSONObject getParams() {
 		return params;
 	}
 
-	public void setParams(String params) {
+	public void setParams(JSONObject params) {
 		this.params = params;
+	}
+
+	@Override
+	public String toString() {
+		this.params.put("type", type);
+		this.params.put("action", action);
+		this.params.put("groupId", groupId);
+		return params.toJSONString();
 	}
 
 }

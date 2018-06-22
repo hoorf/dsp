@@ -3,9 +3,7 @@ package com.github.ruifengho.modal;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.github.ruifengho.task.Task;
-
-public class TxGroup extends Task {
+public class TxGroup {
 
 	private String groupId;
 

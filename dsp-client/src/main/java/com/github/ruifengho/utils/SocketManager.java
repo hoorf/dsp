@@ -32,6 +32,10 @@ public class SocketManager {
 		SocketUtils.sendMsg(ctx, JSONObject.toJSONString(obj));
 	}
 
+	public void sendMsg(String obj) {
+		SocketUtils.sendMsg(ctx, obj);
+	}
+
 	public static SocketManager getInstance() {
 		if (instance == null) {
 			synchronized (SocketManager.class) {

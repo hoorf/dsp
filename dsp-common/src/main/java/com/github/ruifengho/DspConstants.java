@@ -6,6 +6,8 @@ public interface DspConstants {
 
 	public final static String MSG_TYPE_SERVER = "_SERVER_";
 
+	public final static String ACTION_CLOSE_TX_GROUP = "ACTION_CLOSE_TX_GROUP";
+
 	public final static String ACTION_CREATE_TX_GROUP = "ACTION_CREATE_TX_GROUP";
 
 	public final static String ACTION_ADD_TX_GROUP = "ACTION_ADD_TX_GROUP";

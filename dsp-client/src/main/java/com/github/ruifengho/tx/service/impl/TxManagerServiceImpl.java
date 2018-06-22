@@ -11,8 +11,22 @@ import com.github.ruifengho.utils.SocketManager;
 public class TxManagerServiceImpl implements TxManagerService {
 
 	public void createTransactionGroup(String groupId) {
-		SocketManager.getInstance()
-				.sendMsg(new DspAction(DspConstants.MSG_TYPE_CLIENT, DspConstants.ACTION_CREATE_TX_GROUP, groupId, null));
+
+		DspAction dspAction = new DspAction(DspConstants.MSG_TYPE_CLIENT, DspConstants.ACTION_CREATE_TX_GROUP, groupId);
+		SocketManager.getInstance().sendMsg(dspAction.toString());
+	}
+
+	@Override
+	public int closeTransactionGroup(String groupId, int state) {
+		DspAction dspAction = new DspAction(DspConstants.MSG_TYPE_CLIENT, DspConstants.ACTION_CLOSE_TX_GROUP, groupId);
+		dspAction.getParams().put("state", state);
+		try {
+			SocketManager.getInstance().sendMsg(dspAction.toString());
+		} catch (Exception e) {
+			return 0;
+		}
+
+		return 0;
 	}
 
 }

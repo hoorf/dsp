@@ -20,7 +20,7 @@ import io.netty.handler.timeout.IdleStateEvent;
 
 public class DspClientConnectHandler extends ChannelInboundHandlerAdapter {
 
-	private static String HEART_JSON = JSON.toJSONString(new DspAction(MSG_TYPE_CLIENT, ACTION_HEART, null, "K"));
+	private static String HEART_JSON = new DspAction(MSG_TYPE_CLIENT, ACTION_HEART, null).toString();
 
 	private static final Logger log = LoggerFactory.getLogger(DspClientConnectHandler.class);
 
@@ -35,7 +35,7 @@ public class DspClientConnectHandler extends ChannelInboundHandlerAdapter {
 
 		// 上传模块信息
 		SocketUtils.sendMsg(ctx,
-				JSON.toJSONString(new DspAction(MSG_TYPE_CLIENT, ACTION_UPLOAD_CLIENT_MSG, null, "client msg")));
+				JSON.toJSONString(new DspAction(MSG_TYPE_CLIENT, ACTION_UPLOAD_CLIENT_MSG, null).toString()));
 	}
 
 	@Override

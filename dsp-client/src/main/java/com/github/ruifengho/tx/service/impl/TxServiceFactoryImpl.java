@@ -2,7 +2,7 @@ package com.github.ruifengho.tx.service.impl;
 
 import javax.annotation.Resource;
 
-import org.aspectj.lang.ProceedingJoinPoint;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.github.ruifengho.aop.DspTxTransactionAopInfo;
@@ -18,7 +18,7 @@ public class TxServiceFactoryImpl implements TxServiceFactory {
 	@Override
 	public TransactionService selectService(String groupId, DspTxTransactionAopInfo info) {
 		TransactionService service = null;
-		if (info.getAnnotation().isStart()) {
+		if (info.getAnnotation().isStart() && StringUtils.isEmpty(groupId)) {
 			service = start;
 		}
 		return service;

@@ -49,7 +49,7 @@ public class DspServerHandler extends ChannelInboundHandlerAdapter {
 		ActionService service = nettyService.getService(dspAction.getAction());
 		String address = ctx.channel().remoteAddress().toString();
 
-		String result = service.execute(address, dspAction.getGroupId(), dspAction.getParams());
+		String result = service.execute(address, dspAction.getGroupId(), dspAction.getParams().toJSONString());
 
 		JSONObject jobject = new JSONObject();
 		jobject.put("action", dspAction.getAction());

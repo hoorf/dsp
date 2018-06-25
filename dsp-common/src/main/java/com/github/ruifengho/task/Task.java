@@ -26,6 +26,10 @@ public class Task {
 
 	private Condition condition = lock.newCondition();
 
+	public void setRunner(TaskRunner execute) {
+		this.execute = execute;
+	}
+
 	public void signalTask(TaskRunner runner) {
 
 		lock.lock();

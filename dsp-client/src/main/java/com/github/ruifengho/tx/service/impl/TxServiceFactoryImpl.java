@@ -15,11 +15,20 @@ public class TxServiceFactoryImpl implements TxServiceFactory {
 	@Resource(name = "txStartTransactionService")
 	private TransactionService start;
 
+	@Resource(name = "txRunningTransactionService")
+	private TransactionService running;
+
+	@Resource(name = "txDefaultTransactionService")
+	private TransactionService defaultService;
+
 	@Override
 	public TransactionService selectService(String groupId, DspTxTransactionAopInfo info) {
-		TransactionService service = null;
+		TransactionService service = defaultService;
 		if (info.getAnnotation().isStart() && StringUtils.isEmpty(groupId)) {
 			service = start;
+		}
+		if (!StringUtils.isEmpty(groupId)) {
+			service = running;
 		}
 		return service;
 	}

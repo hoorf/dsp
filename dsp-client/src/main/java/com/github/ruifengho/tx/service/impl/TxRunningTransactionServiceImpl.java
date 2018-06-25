@@ -2,7 +2,6 @@ package com.github.ruifengho.tx.service.impl;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,24 +16,20 @@ import com.github.ruifengho.tx.service.TransactionService;
 import com.github.ruifengho.tx.service.TxManagerService;
 import com.github.ruifengho.util.RandomUtils;
 
-@Service("txStartTransactionService")
-public class TxStartTransactionServiceImpl implements TransactionService {
+@Service("txRunningTransactionService")
+public class TxRunningTransactionServiceImpl implements TransactionService {
 
-	private static final Logger logger = LoggerFactory.getLogger(TxStartTransactionServiceImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(TxRunningTransactionServiceImpl.class);
 
 	@Resource
 	private TxManagerService txManagerService;
 
 	@Override
 	public Object execute(ProceedingJoinPoint point, String groupId, DspTxTransactionAopInfo info) throws Throwable {
-		logger.debug("--->begin start transaction");
-		groupId = StringUtils.isEmpty(groupId) ? RandomUtils.randomUUID() : groupId;
 
 		TxGroup txGroup = TxGroupManager.getInstance().createTxGroup(groupId);
 		String taskId = RandomUtils.randomUUID();
 		TxTask txTask = txGroup.createTxTask(taskId);
-
-		txManagerService.createTransactionGroup(groupId);
 
 		txTask.setRunner(new TaskRunner() {
 			@Override
@@ -74,6 +69,7 @@ public class TxStartTransactionServiceImpl implements TransactionService {
 					+ (commit ? "commit" : "rollback"));
 
 		}
+
 	}
 
 	private int rollbackException(Throwable e, DspTxTransactionAopInfo info) {

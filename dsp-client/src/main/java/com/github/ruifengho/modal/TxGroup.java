@@ -17,6 +17,12 @@ public class TxGroup {
 		return task;
 	}
 
+	public void notifyAllTask() {
+		for (String taskId : map.keySet()) {
+			map.get(taskId).signalTask();
+		}
+	}
+
 	public String getGroupId() {
 		return groupId;
 	}

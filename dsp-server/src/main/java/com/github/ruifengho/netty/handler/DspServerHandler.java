@@ -9,9 +9,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.ruifengho.modal.DspAction;
 import com.github.ruifengho.netty.service.ActionService;
 import com.github.ruifengho.netty.service.NettyService;
+import com.github.ruifengho.netty.utils.ChannelManager;
 import com.github.ruifengho.util.SocketUtils;
 
 import io.netty.channel.ChannelHandler.Sharable;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.IdleState;
@@ -33,6 +35,18 @@ public class DspServerHandler extends ChannelInboundHandlerAdapter {
 	}
 
 	@Override
+	public void channelActive(ChannelHandlerContext ctx) throws Exception {
+		super.channelActive(ctx);
+		ChannelManager.getInstance().put(ctx);
+	}
+
+	@Override
+	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+		super.channelInactive(ctx);
+		ChannelManager.getInstance().remove(ctx);
+	}
+
+	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 		String json = SocketUtils.getJson(msg);
 		log.debug("request:{}", json);
@@ -48,6 +62,8 @@ public class DspServerHandler extends ChannelInboundHandlerAdapter {
 
 		ActionService service = nettyService.getService(dspAction.getAction());
 		String address = ctx.channel().remoteAddress().toString();
+
+		ChannelManager.getInstance().group(dspAction.getGroupId(), ctx);
 
 		String result = service.execute(address, dspAction.getGroupId(), dspAction.getParams().toJSONString());
 

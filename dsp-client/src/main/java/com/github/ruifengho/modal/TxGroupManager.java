@@ -25,6 +25,7 @@ public class TxGroupManager {
 		return instance;
 	}
 
+	
 	public TxGroup createTxGroup(String groupId) {
 		TxGroup txGroup = new TxGroup();
 		txGroup.setGroupId(groupId);

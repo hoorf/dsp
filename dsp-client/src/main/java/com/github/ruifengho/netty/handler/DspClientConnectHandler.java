@@ -26,6 +26,11 @@ public class DspClientConnectHandler extends ChannelInboundHandlerAdapter {
 
 	private NettyControlService nettyControlService;
 
+	public DspClientConnectHandler(NettyControlService nettyControlService) {
+		super();
+		this.nettyControlService = nettyControlService;
+	}
+
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		super.channelActive(ctx);
@@ -34,8 +39,7 @@ public class DspClientConnectHandler extends ChannelInboundHandlerAdapter {
 		SocketUtils.sendMsg(ctx, HEART_JSON);
 
 		// 上传模块信息
-		SocketUtils.sendMsg(ctx,
-				JSON.toJSONString(new DspAction(MSG_TYPE_CLIENT, ACTION_UPLOAD_CLIENT_MSG, null).toString()));
+		SocketUtils.sendMsg(ctx, new DspAction(MSG_TYPE_CLIENT, ACTION_UPLOAD_CLIENT_MSG, null).toString());
 	}
 
 	@Override

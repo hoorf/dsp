@@ -2,6 +2,8 @@ package com.github.ruifengho.netty.impl;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
@@ -17,6 +19,8 @@ import io.netty.channel.ChannelHandlerContext;
 
 @Service
 public class NettyControlServiceImpl implements NettyControlService {
+
+	private static final Logger log = LoggerFactory.getLogger(NettyControlServiceImpl.class);
 
 	@Resource
 	private NettyClientService nettyClientService;
@@ -43,6 +47,10 @@ public class NettyControlServiceImpl implements NettyControlService {
 			case DspConstants.ACTION_NOTIFY: {
 				TxGroup txGroup = TxGroupManager.getInstance().getTxGroup(dspAction.getGroupId());
 				txGroup.notifyAllTask();
+				break;
+			}
+			case DspConstants.ACTION_UPLOAD_CLIENT_MSG: {
+				log.debug(json);
 				break;
 			}
 			default:

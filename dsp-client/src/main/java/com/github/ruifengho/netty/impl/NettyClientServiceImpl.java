@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.github.ruifengho.config.ConfigLoader;
 import com.github.ruifengho.config.Constants;
 import com.github.ruifengho.netty.NettyClientService;
+import com.github.ruifengho.netty.NettyControlService;
 import com.github.ruifengho.netty.handler.DspClientConnectHandler;
 
 import io.netty.bootstrap.Bootstrap;
@@ -36,6 +37,8 @@ public class NettyClientServiceImpl implements NettyClientService {
 
 	@Autowired
 	private ConfigLoader configLoader;
+	@Autowired
+	private NettyControlService nettyControlService;
 
 	@Override
 	public void connect() {
@@ -50,7 +53,7 @@ public class NettyClientServiceImpl implements NettyClientService {
 		String host = Constants.config.getHost();
 		int port = Constants.config.getPort();
 
-		DspClientConnectHandler handler = new DspClientConnectHandler();
+		DspClientConnectHandler handler = new DspClientConnectHandler(nettyControlService);
 
 		try {
 

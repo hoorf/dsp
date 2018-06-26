@@ -17,18 +17,19 @@ import io.netty.channel.ChannelHandlerContext;
 public class ActionNotifyServiceImpl implements ActionService {
 
 	@Override
-	public String execute(String channelAddress, DspAction action) {
+	public String execute(ChannelHandlerContext ctx, DspAction action) {
 
 		List<ChannelHandlerContext> groups = ChannelManager.getInstance().getGroup(action.getGroupId());
 		if (CollectionUtils.isNotEmpty(groups)) {
 			DspAction dsp = new DspAction(DspConstants.MSG_TYPE_SERVER, DspConstants.ACTION_NOTIFY,
 					action.getGroupId());
 			dsp.setParams(action.getParams());
-			groups.forEach(ctx -> {
-				SocketUtils.sendMsg(ctx, dsp.toString());
+			groups.forEach(ct -> {
+				SocketUtils.sendMsg(ct, dsp.toString());
 			});
 		}
-		return String.format("%s server notify all for group[%s] ", channelAddress, action.getGroupId());
+		return String.format("%s server notify all for group[%s] ", ctx.channel().remoteAddress().toString(),
+				action.getGroupId());
 	}
 
 }

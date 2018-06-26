@@ -1,6 +1,7 @@
 package com.github.ruifengho.netty.utils;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -29,6 +30,17 @@ public class ChannelManager {
 		return map.containsKey(groupId);
 	}
 
+	public void clearNoActiveChannel() {
+		Iterator<ChannelHandlerContext> iterator = channelList.iterator();
+		while (iterator.hasNext()) {
+			ChannelHandlerContext context = iterator.next();
+			if (context.isRemoved()) {
+				iterator.remove();
+			}
+		}
+
+	}
+
 	public void group(String groupId, ChannelHandlerContext ctx) {
 		if (StringUtils.isNotBlank(groupId)) {
 			if (!map.containsKey(groupId)) {
@@ -42,7 +54,15 @@ public class ChannelManager {
 
 	public List<ChannelHandlerContext> getGroup(String groupId) {
 		if (StringUtils.isNotBlank(groupId)) {
-			return map.get(groupId);
+			List<ChannelHandlerContext> list = map.get(groupId);
+			Iterator<ChannelHandlerContext> iterator = list.iterator();
+			while (iterator.hasNext()) {
+				ChannelHandlerContext context = iterator.next();
+				if (context.isRemoved()) {
+					iterator.remove();
+				}
+			}
+			return list;
 		}
 		return null;
 	}

@@ -2,6 +2,8 @@ package com.github.ruifengho;
 
 public interface DspConstants {
 
+	public final static String DSP_TX_GROUP = "dsp-tx-group";
+
 	public final static String MSG_TYPE_CLIENT = "_CLIENT_";
 
 	public final static String MSG_TYPE_SERVER = "_SERVER_";

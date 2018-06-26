@@ -11,6 +11,7 @@
 		<module>dsp-client</module>
 		<module>dsp-test</module>
 		<module>dsp-common</module>
+		<module>dsp-springcloud</module>
 	</modules>
 
 	<parent>
@@ -42,6 +43,11 @@
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
 			<version>1.1.30</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.1</version>
 		</dependency>
 	</dependencies>
 

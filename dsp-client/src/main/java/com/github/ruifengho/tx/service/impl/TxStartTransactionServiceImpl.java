@@ -33,6 +33,7 @@ public class TxStartTransactionServiceImpl implements TransactionService {
 		TxGroup txGroup = TxGroupManager.getInstance().createTxGroup(groupId);
 		String taskId = RandomUtils.randomUUID();
 		TxTask txTask = txGroup.createTxTask(taskId);
+		TxGroupManager.getInstance().setCurrent(txGroup);
 
 		txManagerService.createTransactionGroup(groupId);
 

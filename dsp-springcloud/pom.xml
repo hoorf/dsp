@@ -5,12 +5,16 @@
     <artifactId>dsp</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <artifactId>dsp-test</artifactId>
+  <artifactId>dsp-springcloud</artifactId>
   <dependencies>
   	<dependency>
   		<groupId>com.github.ruifengho</groupId>
-  		<artifactId>dsp-springcloud</artifactId>
+  		<artifactId>dsp-client</artifactId>
   		<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>io.github.openfeign</groupId>
+  		<artifactId>feign-core</artifactId>
   	</dependency>
   </dependencies>
 </project>

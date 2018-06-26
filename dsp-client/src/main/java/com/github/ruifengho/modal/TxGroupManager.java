@@ -9,7 +9,17 @@ public class TxGroupManager {
 
 	private static TxGroupManager instance;
 
+	private static TxGroup current;
+
 	private TxGroupManager() {
+	}
+
+	public TxGroup getCurrent() {
+		return current;
+	}
+
+	public void setCurrent(TxGroup current) {
+		TxGroupManager.current = current;
 	}
 
 	public static TxGroupManager getInstance() {
@@ -25,7 +35,6 @@ public class TxGroupManager {
 		return instance;
 	}
 
-	
 	public TxGroup createTxGroup(String groupId) {
 		TxGroup txGroup = new TxGroup();
 		txGroup.setGroupId(groupId);

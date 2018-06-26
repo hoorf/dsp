@@ -1,9 +1,13 @@
 dsp:
   server:
     address: http://127.0.0.1:3333/dsp
+
 spring:
   application:
-    name: demo    
+    name: demo1
+    
+server:
+  port: 8088       
     
 logging:
   level:

@@ -1,7 +1,6 @@
 package com.github.ruifengho.netty.handler;
 
 import static com.github.ruifengho.DspConstants.ACTION_HEART;
-import static com.github.ruifengho.DspConstants.ACTION_UPLOAD_CLIENT_MSG;
 import static com.github.ruifengho.DspConstants.MSG_TYPE_CLIENT;
 
 import org.slf4j.Logger;
@@ -32,29 +31,25 @@ public class DspClientConnectHandler extends ChannelInboundHandlerAdapter {
 
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
-		super.channelActive(ctx);
+		log.debug("激活了");
 		SocketManager.getInstance().setCtx(ctx);
-
-		SocketUtils.sendMsg(ctx, HEART_JSON);
-
 		// 上传模块信息
-		SocketUtils.sendMsg(ctx, new DspAction(MSG_TYPE_CLIENT, ACTION_UPLOAD_CLIENT_MSG, null).toString());
+		// SocketUtils.sendMsg(ctx, new DspAction(MSG_TYPE_CLIENT,
+		// ACTION_UPLOAD_CLIENT_MSG, null).toString());
 	}
 
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
 		log.debug("断开了");
-		super.channelInactive(ctx);
 		SocketManager.getInstance().setConnected(false);
 		nettyControlService.restart();
 	}
 
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-
 		String json = SocketUtils.getJson(msg);
 
-		log.debug(json);
+		// log.debug(json);
 
 		nettyControlService.process(ctx, json);
 	}
@@ -64,14 +59,17 @@ public class DspClientConnectHandler extends ChannelInboundHandlerAdapter {
 		if (IdleStateEvent.class.isAssignableFrom(evt.getClass())) {
 			IdleStateEvent event = (IdleStateEvent) evt;
 			if (event.state() == IdleState.READER_IDLE) {
-				log.debug("多久没收");
+				// SocketUtils.sendMsg(ctx, HEART_JSON);
+				// log.debug("多久没收");
+				ctx.close();
 			} else if (event.state() == IdleState.WRITER_IDLE) {
-				log.debug("多久没发");
+				// log.debug("多久没发");
 				// 多久没发
-				SocketUtils.sendMsg(ctx, HEART_JSON);
+				// SocketUtils.sendMsg(ctx, HEART_JSON);
 			} else if (event.state() == IdleState.ALL_IDLE) {
 				// 没发没收
-				log.debug("ALL");
+
+				SocketUtils.sendMsg(ctx, HEART_JSON);
 			}
 		}
 	}

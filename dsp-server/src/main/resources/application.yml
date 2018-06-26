@@ -17,5 +17,5 @@ dsp:
     netty:
       host: 127.0.0.1
       heart: 5
-      port: 666
+      port: 6666
       delaytime: 3      

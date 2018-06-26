@@ -85,4 +85,10 @@ public class ChannelManager {
 		return channel;
 	}
 
+	public static Queue<ChannelHandlerContext> getChannelList() {
+		return channelList;
+	}
+	
+	
+
 }

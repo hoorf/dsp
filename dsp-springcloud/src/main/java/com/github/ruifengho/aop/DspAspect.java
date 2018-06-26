@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -18,6 +19,7 @@ import com.github.ruifengho.DspConstants;
 
 @Aspect
 @Order(Ordered.HIGHEST_PRECEDENCE)
+@Component
 public class DspAspect {
 
 	private static final Logger log = LoggerFactory.getLogger(DspAspect.class);

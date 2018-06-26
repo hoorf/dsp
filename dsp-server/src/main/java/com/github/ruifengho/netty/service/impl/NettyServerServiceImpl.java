@@ -62,7 +62,7 @@ public class NettyServerServiceImpl implements NettyServerService {
 
 				@Override
 				protected void initChannel(SocketChannel sc) throws Exception {
-					sc.pipeline().addLast("timeout", new IdleStateHandler(heart, heart, heart, TimeUnit.SECONDS));
+//					sc.pipeline().addLast("timeout", new IdleStateHandler(10, 0, 0));
 					sc.pipeline().addLast(new LengthFieldPrepender(4, false));
 					sc.pipeline().addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
 					sc.pipeline().addLast(handler);

@@ -66,7 +66,7 @@ public class NettyClientServiceImpl implements NettyClientService {
 			boot.handler(new ChannelInitializer<SocketChannel>() {
 				@Override
 				protected void initChannel(SocketChannel ch) throws Exception {
-					ch.pipeline().addLast("timeout", new IdleStateHandler(heart, heart, heart, TimeUnit.SECONDS));
+					ch.pipeline().addLast("timeout", new IdleStateHandler(18, 15, 10));
 					ch.pipeline().addLast(new LengthFieldPrepender(4, false));
 					ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
 					ch.pipeline().addLast(handler);
@@ -81,9 +81,8 @@ public class NettyClientServiceImpl implements NettyClientService {
 				@Override
 				public void operationComplete(ChannelFuture future) throws Exception {
 					if (!future.isSuccess()) {
-						log.debug("why lose");
+						System.err.println("why lose");
 						future.channel().eventLoop().schedule(new Runnable() {
-
 							@Override
 							public void run() {
 								isStarting = false;

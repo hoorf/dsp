@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.ruifengho.DspConstants;
 import com.github.ruifengho.modal.DspAction;
 import com.github.ruifengho.netty.service.ActionService;
 import com.github.ruifengho.netty.service.NettyService;
@@ -13,7 +14,6 @@ import com.github.ruifengho.netty.utils.ChannelManager;
 import com.github.ruifengho.util.SocketUtils;
 
 import io.netty.channel.ChannelHandler.Sharable;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.IdleState;
@@ -58,18 +58,19 @@ public class DspServerHandler extends ChannelInboundHandlerAdapter {
 
 	private void doService(ChannelHandlerContext ctx, String json) {
 
-		DspAction dspAction = JSONObject.parseObject(json, DspAction.class);
+		DspAction dspAction = DspAction.parse(json);
 
 		ActionService service = nettyService.getService(dspAction.getAction());
 		String address = ctx.channel().remoteAddress().toString();
 
 		ChannelManager.getInstance().group(dspAction.getGroupId(), ctx);
 
-		String result = service.execute(address, dspAction.getGroupId(), dspAction.getParams().toJSONString());
+		String result = service.execute(address, dspAction);
 
 		JSONObject jobject = new JSONObject();
 		jobject.put("action", dspAction.getAction());
 		jobject.put("response", result);
+		jobject.put("type", DspConstants.MSG_TYPE_SERVER);
 
 		SocketUtils.sendMsg(ctx, jobject.toJSONString());
 

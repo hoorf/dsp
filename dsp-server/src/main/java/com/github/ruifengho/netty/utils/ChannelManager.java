@@ -25,6 +25,10 @@ public class ChannelManager {
 
 	}
 
+	public boolean hasGroup(String groupId) {
+		return map.containsKey(groupId);
+	}
+
 	public void group(String groupId, ChannelHandlerContext ctx) {
 		if (StringUtils.isNotBlank(groupId)) {
 			if (!map.containsKey(groupId)) {

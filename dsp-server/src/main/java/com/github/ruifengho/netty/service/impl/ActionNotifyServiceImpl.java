@@ -5,7 +5,6 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.JSONObject;
 import com.github.ruifengho.DspConstants;
 import com.github.ruifengho.modal.DspAction;
 import com.github.ruifengho.netty.service.ActionService;
@@ -18,18 +17,18 @@ import io.netty.channel.ChannelHandlerContext;
 public class ActionNotifyServiceImpl implements ActionService {
 
 	@Override
-	public String execute(String channelAddress, String groupId, String params) {
+	public String execute(String channelAddress, DspAction action) {
 
-		JSONObject json = JSONObject.parseObject(params);
-		List<ChannelHandlerContext> groups = ChannelManager.getInstance().getGroup(groupId);
+		List<ChannelHandlerContext> groups = ChannelManager.getInstance().getGroup(action.getGroupId());
 		if (CollectionUtils.isNotEmpty(groups)) {
-			DspAction dsp = new DspAction(DspConstants.MSG_TYPE_SERVER, DspConstants.ACTION_NOTIFY, groupId);
-			dsp.setParams(json);
+			DspAction dsp = new DspAction(DspConstants.MSG_TYPE_SERVER, DspConstants.ACTION_NOTIFY,
+					action.getGroupId());
+			dsp.setParams(action.getParams());
 			groups.forEach(ctx -> {
 				SocketUtils.sendMsg(ctx, dsp.toString());
 			});
 		}
-		return String.format("%s server notify all for group[%s] ", channelAddress, groupId);
+		return String.format("%s server notify all for group[%s] ", channelAddress, action.getGroupId());
 	}
 
 }

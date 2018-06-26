@@ -8,6 +8,7 @@ public class DspAction {
 
 	private String action;
 	private String groupId;
+	private String state;
 	private JSONObject params = new JSONObject();
 
 	public DspAction() {
@@ -53,12 +54,37 @@ public class DspAction {
 		this.params = params;
 	}
 
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
 	@Override
 	public String toString() {
 		this.params.put("type", type);
 		this.params.put("action", action);
 		this.params.put("groupId", groupId);
+		this.params.put("state", state);
 		return params.toJSONString();
+	}
+
+	public static DspAction parse(String json) {
+		DspAction action = new DspAction();
+		JSONObject parseObject = JSONObject.parseObject(json);
+		action.setState(parseObject.getString("state"));
+		parseObject.remove("state");
+		action.setType(parseObject.getString("type"));
+		parseObject.remove("type");
+		action.setAction(parseObject.getString("action"));
+		parseObject.remove("action");
+		action.setGroupId(parseObject.getString("groupId"));
+		parseObject.remove("groupId");
+		action.setParams(parseObject);
+		return action;
+
 	}
 
 }

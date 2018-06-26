@@ -7,7 +7,6 @@ import static com.github.ruifengho.DspConstants.MSG_TYPE_CLIENT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.fastjson.JSON;
 import com.github.ruifengho.modal.DspAction;
 import com.github.ruifengho.netty.NettyControlService;
 import com.github.ruifengho.util.SocketUtils;
@@ -44,6 +43,7 @@ public class DspClientConnectHandler extends ChannelInboundHandlerAdapter {
 
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+		log.debug("断开了");
 		super.channelInactive(ctx);
 		SocketManager.getInstance().setConnected(false);
 		nettyControlService.restart();
@@ -64,12 +64,14 @@ public class DspClientConnectHandler extends ChannelInboundHandlerAdapter {
 		if (IdleStateEvent.class.isAssignableFrom(evt.getClass())) {
 			IdleStateEvent event = (IdleStateEvent) evt;
 			if (event.state() == IdleState.READER_IDLE) {
-
+				log.debug("多久没收");
 			} else if (event.state() == IdleState.WRITER_IDLE) {
+				log.debug("多久没发");
 				// 多久没发
 				SocketUtils.sendMsg(ctx, HEART_JSON);
 			} else if (event.state() == IdleState.ALL_IDLE) {
 				// 没发没收
+				log.debug("ALL");
 			}
 		}
 	}

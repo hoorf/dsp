@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.github.ruifengho.DspConstants;
 import com.github.ruifengho.config.ConfigReader;
+import com.github.ruifengho.modal.DspAction;
 import com.github.ruifengho.netty.service.ActionService;
 
 @Service(DspConstants.ACTION_HEART)
@@ -14,7 +15,7 @@ public class ActionHeartServiceImpl implements ActionService {
 	private ConfigReader configReader;
 
 	@Override
-	public String execute(String channelAddress, String key, String params) {
+	public String execute(String channelAddress, DspAction action) {
 		return String.valueOf(configReader.getTransactionNettyDelaytime());
 	}
 

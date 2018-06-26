@@ -81,6 +81,7 @@ public class NettyClientServiceImpl implements NettyClientService {
 				@Override
 				public void operationComplete(ChannelFuture future) throws Exception {
 					if (!future.isSuccess()) {
+						log.debug("why lose");
 						future.channel().eventLoop().schedule(new Runnable() {
 
 							@Override

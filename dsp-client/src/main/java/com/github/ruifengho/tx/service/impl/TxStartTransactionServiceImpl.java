@@ -46,7 +46,7 @@ public class TxStartTransactionServiceImpl implements TransactionService {
 		});
 		int state = 0;
 		try {
-			txTask.waitTask();
+			txTask.waitTask();			
 			state = 1;
 			return txTask.getResultObj();
 		} catch (Exception e) {

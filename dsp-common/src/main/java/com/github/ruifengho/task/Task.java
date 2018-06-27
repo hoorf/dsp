@@ -29,7 +29,7 @@ public class Task {
 	public void setRunner(TaskRunner execute) {
 		this.execute = execute;
 	}
-
+	
 	public void signalTask(TaskRunner runner) {
 
 		lock.lock();

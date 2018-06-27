@@ -46,9 +46,11 @@ public class NettyControlServiceImpl implements NettyControlService {
 			switch (dspAction.getAction()) {
 			case DspConstants.ACTION_NOTIFY: {
 				TxTask txTask = TxGroup.getTxTask(dspAction.getGroupId());
-				txTask.signalTask();
-				if (txTask.isNotify()) {
-					TxGroup.removeTxTask(dspAction.getGroupId());
+				if (txTask != null) {
+					txTask.signalTask();
+					if (txTask.isNotify()) {
+						TxGroup.removeTxTask(dspAction.getGroupId());
+					}
 				}
 				break;
 			}

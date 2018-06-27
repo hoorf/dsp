@@ -26,12 +26,13 @@ public class DspRestTemplateInterceptor implements RequestInterceptor {
 		HttpServletRequest request = requestAttributes == null ? null
 				: ((ServletRequestAttributes) requestAttributes).getRequest();
 		String groupId = request.getHeader(DspConstants.DSP_TX_GROUP);
-
-		if (StringUtils.isBlank("groupId")) {
+		log.debug("调用client", groupId);
+		if (StringUtils.isBlank(groupId)) {
 			groupId = TxTaskLocal.current();
 		}
 
 		if (groupId != null) {
+			log.debug("设置group【{}】", groupId);
 			template.header(DspConstants.DSP_TX_GROUP, groupId);
 		}
 

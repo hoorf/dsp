@@ -31,6 +31,7 @@ public class TxStartTransactionServiceImpl implements TransactionService {
 		logger.debug("--->begin start transaction");
 		groupId = StringUtils.isEmpty(groupId) ? RandomUtils.randomUUID() : groupId;
 
+		logger.debug("创建了 group【{}】", groupId);
 		TxTaskLocal.current(groupId);
 		TxTask txTask = TxGroup.createTxTask(groupId);
 

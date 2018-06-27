@@ -45,29 +45,35 @@ public class Task {
 
 	public void runAndWait() throws Throwable {
 		lock.lock();
-		isAwait = true;
-		isNotify = false;
-		if (execute != null && isExecuted == false) {
-			isAwait = false;
-			isRunning = true;
-			try {
-				resultObj = execute.run();
-			} catch (Throwable e) {
-				resultObj = e;
+		try {
+			isAwait = true;
+			isNotify = false;
+			if (execute != null && isExecuted == false) {
+				isAwait = false;
+				isRunning = true;
+				try {
+					resultObj = execute.run();
+				} catch (Throwable e) {
+					resultObj = e;
+				}
+				isRunning = false;
+				isExecuted = true;
+				execute = null;
 			}
-			isRunning = false;
-			isExecuted = true;
-			execute = null;
+			condition.await();
+			isNotify = true;
+		} finally {
+			lock.unlock();
 		}
-		lock.unlock();
-		condition.await();
-		isNotify = true;
 	}
 
 	public void signalTask() {
 		lock.lock();
-		condition.signal();
-		lock.unlock();
+		try {
+			condition.signal();
+		} finally {
+			lock.unlock();
+		}
 	}
 
 	public boolean isRunning() {

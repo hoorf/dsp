@@ -1,11 +1,16 @@
 package com.github.ruifengho.interceptor;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.github.ruifengho.DspConstants;
-import com.github.ruifengho.modal.TxGroup;
-import com.github.ruifengho.modal.TxGroupManager;
+import com.github.ruifengho.modal.TxTaskLocal;
 
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
@@ -16,11 +21,14 @@ public class DspRestTemplateInterceptor implements RequestInterceptor {
 
 	@Override
 	public void apply(RequestTemplate template) {
-		log.debug("添加 groupId");
-		TxGroup current = TxGroupManager.getInstance().getCurrent();
-		String groupId = null;
-		if (current != null && current.getGroupId() != null) {
-			groupId = current.getGroupId();
+		RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
+
+		HttpServletRequest request = requestAttributes == null ? null
+				: ((ServletRequestAttributes) requestAttributes).getRequest();
+		String groupId = request.getHeader(DspConstants.DSP_TX_GROUP);
+
+		if (StringUtils.isBlank("groupId")) {
+			groupId = TxTaskLocal.current();
 		}
 
 		if (groupId != null) {

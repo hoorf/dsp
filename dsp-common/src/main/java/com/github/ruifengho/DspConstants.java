@@ -22,4 +22,8 @@ public interface DspConstants {
 
 	public final static String ACTION_UPLOAD_CLIENT_MSG = "ACTION_UPLOAD_CLIENT_MSG";
 
+	public final static Integer STATE_ROLLBACK = 0;
+
+	public final static Integer STATE_COMMIT = 1;
+
 }

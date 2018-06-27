@@ -5,13 +5,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class TxGroup {
 
-	private String groupId;
-
 	private static Map<String, TxTask> map = new ConcurrentHashMap<>();
+	
+	
+	
 
-	public TxTask createTxTask(String taskId) {
+	public static TxTask createTxTask(String groupId) {
 		TxTask task = new TxTask();
-		task.setTaskId(taskId);
 		task.setGroupId(groupId);
 		putTxTask(task);
 		return task;
@@ -23,20 +23,16 @@ public class TxGroup {
 		}
 	}
 
-	public String getGroupId() {
-		return groupId;
+	public static void removeTxTask(String groupId) {
+		map.remove(groupId);
 	}
 
-	public void setGroupId(String groupId) {
-		this.groupId = groupId;
+	public static TxTask getTxTask(String groupId) {
+		return map.get(groupId);
 	}
 
-	public TxTask getTxTask(String taskId) {
-		return map.get(taskId);
-	}
-
-	public void putTxTask(TxTask task) {
-		map.put(task.getTaskId(), task);
+	public static void putTxTask(TxTask task) {
+		map.put(task.getGroupId(), task);
 	}
 
 	public boolean hasRunningTxTask() {

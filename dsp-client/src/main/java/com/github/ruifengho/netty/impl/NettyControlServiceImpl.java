@@ -10,7 +10,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.ruifengho.DspConstants;
 import com.github.ruifengho.modal.DspAction;
 import com.github.ruifengho.modal.TxGroup;
-import com.github.ruifengho.modal.TxGroupManager;
+import com.github.ruifengho.modal.TxTask;
 import com.github.ruifengho.netty.NettyClientService;
 import com.github.ruifengho.netty.NettyControlService;
 import com.github.ruifengho.utils.SocketManager;
@@ -45,8 +45,11 @@ public class NettyControlServiceImpl implements NettyControlService {
 
 			switch (dspAction.getAction()) {
 			case DspConstants.ACTION_NOTIFY: {
-				TxGroup txGroup = TxGroupManager.getInstance().getTxGroup(dspAction.getGroupId());
-				txGroup.notifyAllTask();
+				TxTask txTask = TxGroup.getTxTask(dspAction.getGroupId());
+				txTask.signalTask();
+				if (txTask.isNotify()) {
+					TxGroup.removeTxTask(dspAction.getGroupId());
+				}
 				break;
 			}
 			case DspConstants.ACTION_UPLOAD_CLIENT_MSG: {

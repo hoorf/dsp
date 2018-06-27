@@ -29,7 +29,7 @@ public class Task {
 	public void setRunner(TaskRunner execute) {
 		this.execute = execute;
 	}
-	
+
 	public void signalTask(TaskRunner runner) {
 
 		lock.lock();
@@ -43,38 +43,31 @@ public class Task {
 		}
 	}
 
-	public void signalTask() {
+	public void runAndWait() throws Throwable {
 		lock.lock();
-		try {
-			condition.signal();
-			isNotify = true;
-		} finally {
-			lock.unlock();
+		isAwait = true;
+		isNotify = false;
+		if (execute != null && isExecuted == false) {
+			isAwait = false;
+			isRunning = true;
+			try {
+				resultObj = execute.run();
+			} catch (Throwable e) {
+				resultObj = e;
+			}
+			isRunning = false;
+			isExecuted = true;
+			execute = null;
 		}
+		lock.unlock();
+		condition.await();
+		isNotify = true;
 	}
 
-	public void waitTask() throws Throwable {
+	public void signalTask() {
 		lock.lock();
-		try {
-			isAwait = true;
-			isNotify = false;
-			condition.await();
-			if (execute != null && isExecuted == false) {
-				isAwait = false;
-				isRunning = true;
-				try {
-					resultObj = execute.run();
-				} catch (Throwable e) {
-					resultObj = e;
-				}
-				isRunning = false;
-				isExecuted = true;
-				execute = null;
-				waitTask();
-			}
-		} finally {
-			lock.unlock();
-		}
+		condition.signal();
+		lock.unlock();
 	}
 
 	public boolean isRunning() {

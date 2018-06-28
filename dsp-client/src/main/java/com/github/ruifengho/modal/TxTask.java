@@ -22,5 +22,4 @@ public class TxTask extends Task {
 	public void setGroupId(String groupId) {
 		this.groupId = groupId;
 	}
-
 }

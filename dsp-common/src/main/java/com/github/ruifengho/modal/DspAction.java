@@ -8,7 +8,7 @@ public class DspAction {
 
 	private String action;
 	private String groupId;
-	private String state;
+	private Integer state;
 	private JSONObject params = new JSONObject();
 
 	public DspAction() {
@@ -54,11 +54,11 @@ public class DspAction {
 		this.params = params;
 	}
 
-	public String getState() {
+	public Integer getState() {
 		return state;
 	}
 
-	public void setState(String state) {
+	public void setState(Integer state) {
 		this.state = state;
 	}
 
@@ -74,7 +74,7 @@ public class DspAction {
 	public static DspAction parse(String json) {
 		DspAction action = new DspAction();
 		JSONObject parseObject = JSONObject.parseObject(json);
-		action.setState(parseObject.getString("state"));
+		action.setState(parseObject.getInteger("state"));
 		parseObject.remove("state");
 		action.setType(parseObject.getString("type"));
 		parseObject.remove("type");

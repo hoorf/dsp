@@ -9,15 +9,13 @@ import com.github.ruifengho.tx.TxManagerPool;
 
 import io.netty.channel.ChannelHandlerContext;
 
-@Service(DspConstants.ACTION_CREATE_TX_GROUP)
-public class ActionCreateTxGroupServiceImpl implements ActionService {
+@Service(DspConstants.ACTION_CHECK_TX_GROUP)
+public class ActionCheckServiceImpl implements ActionService {
 
 	@Override
 	public String execute(ChannelHandlerContext ctx, DspAction action) {
-
-		TxManagerPool.setState(action.getGroupId(), action.getState());
-
-		return String.format("create group 【%s】 success", action.getGroupId());
+		action.setState(TxManagerPool.getState(action.getGroupId()));
+		return TxManagerPool.getState(action.getGroupId()) + "";
 	}
 
 }

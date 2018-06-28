@@ -16,9 +16,10 @@ public class TxManagerServiceImpl implements TxManagerService {
 	}
 
 	@Override
-	public int closeTransactionGroup(String groupId, int state) {
+	public int closeTransactionGroup(String groupId, String taskId, int state) {
 		DspAction dspAction = new DspAction(DspConstants.MSG_TYPE_CLIENT, DspConstants.ACTION_CLOSE_TX_GROUP, groupId);
-		dspAction.getParams().put("state", state);
+		dspAction.setState(state);
+		dspAction.getParams().put("taskId", taskId);
 		try {
 			SocketManager.getInstance().sendMsg(dspAction.toString());
 		} catch (Exception e) {
@@ -39,6 +40,18 @@ public class TxManagerServiceImpl implements TxManagerService {
 
 		return 0;
 
+	}
+
+	@Override
+	public int checkTransaction(String groupId) {
+		DspAction dspAction = new DspAction(DspConstants.MSG_TYPE_CLIENT, DspConstants.ACTION_CHECK_TX_GROUP, groupId);
+		try {
+			SocketManager.getInstance().sendMsg(dspAction.toString());
+		} catch (Exception e) {
+			return 0;
+		}
+
+		return 0;
 	}
 
 }

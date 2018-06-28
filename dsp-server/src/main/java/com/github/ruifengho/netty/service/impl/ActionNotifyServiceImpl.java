@@ -9,6 +9,7 @@ import com.github.ruifengho.DspConstants;
 import com.github.ruifengho.modal.DspAction;
 import com.github.ruifengho.netty.service.ActionService;
 import com.github.ruifengho.netty.utils.ChannelManager;
+import com.github.ruifengho.tx.TxManagerPool;
 import com.github.ruifengho.util.SocketUtils;
 
 import io.netty.channel.ChannelHandlerContext;
@@ -21,11 +22,13 @@ public class ActionNotifyServiceImpl implements ActionService {
 
 		List<ChannelHandlerContext> groups = ChannelManager.getInstance().getGroup(action.getGroupId());
 		if (CollectionUtils.isNotEmpty(groups)) {
-			DspAction dsp = new DspAction(DspConstants.MSG_TYPE_SERVER, DspConstants.ACTION_NOTIFY,
-					action.getGroupId());
-			dsp.setParams(action.getParams());
+			action.setType(DspConstants.MSG_TYPE_SERVER);
+			action.setAction(DspConstants.ACTION_NOTIFY);
+
+			TxManagerPool.setState(action.getGroupId(), action.getState());
+
 			groups.forEach(ct -> {
-				SocketUtils.sendMsg(ct, dsp.toString());
+				SocketUtils.sendMsg(ct, action.toString());
 			});
 		}
 		return String.format("%s server notify all for group[%s] ", ctx.channel().remoteAddress().toString(),

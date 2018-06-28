@@ -3,15 +3,15 @@ package com.github.ruifengho.modal;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.github.ruifengho.util.RandomUtils;
+
 public class TxGroup {
 
 	private static Map<String, TxTask> map = new ConcurrentHashMap<>();
-	
-	
-	
 
 	public static TxTask createTxTask(String groupId) {
 		TxTask task = new TxTask();
+		task.setTaskId("task-" + RandomUtils.randomUUID());
 		task.setGroupId(groupId);
 		putTxTask(task);
 		return task;

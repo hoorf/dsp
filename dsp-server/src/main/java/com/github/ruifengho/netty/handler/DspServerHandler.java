@@ -66,12 +66,13 @@ public class DspServerHandler extends ChannelInboundHandlerAdapter {
 
 		String result = service.execute(ctx, dspAction);
 
-		JSONObject jobject = new JSONObject();
-		jobject.put("action", dspAction.getAction());
-		jobject.put("response", result);
-		jobject.put("type", DspConstants.MSG_TYPE_SERVER);
+		DspAction response = new DspAction();
+		response.setAction(dspAction.getAction());
+		response.getParams().put("response", result);
+		response.setType(DspConstants.MSG_TYPE_SERVER);
+		response.setState(dspAction.getState());
 
-		SocketUtils.sendMsg(ctx, jobject.toJSONString());
+		SocketUtils.sendMsg(ctx, response.toString());
 
 	}
 

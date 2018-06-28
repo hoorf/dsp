@@ -16,6 +16,8 @@ public interface DspConstants {
 
 	public final static String ACTION_COMMIT_TX_GROUP = "ACTION_COMMIT_TX_GROUP";
 
+	public final static String ACTION_CHECK_TX_GROUP = "ACTION_COMMIT_TX_GROUP";
+
 	public final static String ACTION_NOTIFY = "ACTION_NOTIFY";
 
 	public final static String ACTION_HEART = "ACTION_HEART";

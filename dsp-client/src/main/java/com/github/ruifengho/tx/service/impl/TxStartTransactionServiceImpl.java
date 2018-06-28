@@ -50,7 +50,7 @@ public class TxStartTransactionServiceImpl implements TransactionService {
 					state = rollbackException(e, info);
 					throw e;
 				}
-				txManagerService.closeTransactionGroup(group, state);
+				txManagerService.closeTransactionGroup(group, txTask.getTaskId(), state);
 				return result;
 			}
 		});

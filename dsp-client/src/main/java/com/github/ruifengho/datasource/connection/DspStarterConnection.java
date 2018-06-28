@@ -15,9 +15,19 @@ import java.sql.SQLXML;
 import java.sql.Savepoint;
 import java.sql.Statement;
 import java.sql.Struct;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
+
+import com.github.ruifengho.DspConstants;
+import com.github.ruifengho.modal.DspAction;
+import com.github.ruifengho.modal.TxGroup;
+import com.github.ruifengho.modal.TxTask;
+import com.github.ruifengho.modal.TxTaskLocal;
+import com.github.ruifengho.utils.ConnectionManager;
+import com.github.ruifengho.utils.SocketManager;
 
 public class DspStarterConnection implements Connection {
 
@@ -60,7 +70,33 @@ public class DspStarterConnection implements Connection {
 
 	@Override
 	public void commit() throws SQLException {
-		connection.commit();
+
+		if (TxTaskLocal.current() != null) {
+			TxTask task = TxGroup.getTxTask(TxTaskLocal.current());
+			if (task == null) {
+				connection.commit();
+			} else {
+
+				ConnectionManager.put(task, connection);
+
+				DspAction dspAction = new DspAction(DspConstants.MSG_TYPE_CLIENT, DspConstants.ACTION_CHECK_TX_GROUP,
+						task.getGroupId());
+				boolean flag = false;
+				LocalDateTime begin = LocalDateTime.now();
+				do {
+					try {
+						SocketManager.getInstance().sendMsg(dspAction.toString());
+					} catch (Exception e) {
+						flag = true;
+					}
+					// 超时直接回滚
+					if (ChronoUnit.SECONDS.between(begin, LocalDateTime.now()) > 30) {
+						connection.rollback();
+					}
+				} while (flag);
+
+			}
+		}
 
 	}
 

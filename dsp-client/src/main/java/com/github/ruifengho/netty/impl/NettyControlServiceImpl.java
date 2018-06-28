@@ -1,5 +1,7 @@
 package com.github.ruifengho.netty.impl;
 
+import java.sql.Connection;
+
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -13,6 +15,7 @@ import com.github.ruifengho.modal.TxGroup;
 import com.github.ruifengho.modal.TxTask;
 import com.github.ruifengho.netty.NettyClientService;
 import com.github.ruifengho.netty.NettyControlService;
+import com.github.ruifengho.utils.ConnectionManager;
 import com.github.ruifengho.utils.SocketManager;
 
 import io.netty.channel.ChannelHandlerContext;
@@ -40,17 +43,34 @@ public class NettyControlServiceImpl implements NettyControlService {
 	}
 
 	public void process(ChannelHandlerContext ctx, String json) {
-		DspAction dspAction = JSONObject.parseObject(json, DspAction.class);
+		DspAction dspAction = DspAction.parse(json);
 		if (DspConstants.MSG_TYPE_SERVER.equals(dspAction.getType())) {
 
 			switch (dspAction.getAction()) {
 			case DspConstants.ACTION_NOTIFY: {
 				TxTask txTask = TxGroup.getTxTask(dspAction.getGroupId());
 				if (txTask != null) {
-					txTask.signalTask();
-					if (txTask.isNotify()) {
-						TxGroup.removeTxTask(dspAction.getGroupId());
+					if (txTask.getTaskId().equals(dspAction.getParams().getString("taskId"))) {
+						txTask.setState(dspAction.getState());
+						txTask.signalTask();
 					}
+				}
+				break;
+			}
+			case DspConstants.ACTION_CHECK_TX_GROUP: {
+				TxTask txTask = TxGroup.getTxTask(dspAction.getGroupId());
+				if (txTask != null) {
+					Connection connection = ConnectionManager.get(txTask);
+					try {
+						if (dspAction.getState() == DspConstants.STATE_COMMIT) {
+							connection.commit();
+						} else {
+							connection.rollback();
+						}
+					} catch (Exception e) {
+						log.debug("rollback connection for group【{}】", dspAction.getGroupId());
+					}
+
 				}
 				break;
 			}

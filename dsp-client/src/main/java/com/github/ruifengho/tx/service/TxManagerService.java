@@ -16,7 +16,7 @@ public interface TxManagerService {
 	 * @param state
 	 * @return
 	 */
-	int closeTransactionGroup(String groupId, int state);
+	int closeTransactionGroup(String groupId, String taskId, int state);
 
 	/**
 	 * 通知事务组
@@ -26,5 +26,12 @@ public interface TxManagerService {
 	 * @return
 	 */
 	int notifyTransaction(String groupId, int state);
+
+	/**
+	 * 
+	 * @param groupId
+	 * @return
+	 */
+	int checkTransaction(String groupId);
 
 }

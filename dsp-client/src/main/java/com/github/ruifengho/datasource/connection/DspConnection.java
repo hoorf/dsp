@@ -71,7 +71,7 @@ public class DspConnection implements Connection {
 	@Override
 	public void commit() throws SQLException {
 		if (TxTaskLocal.current() != null) {
-			TxTask task = TxGroup.getTxTask(TxTaskLocal.current());
+			TxTask task = TxTaskLocal.current();
 			if (task == null) {
 				connection.commit();
 			} else {

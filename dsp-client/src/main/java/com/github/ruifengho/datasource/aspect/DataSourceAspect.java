@@ -2,7 +2,6 @@ package com.github.ruifengho.datasource.aspect;
 
 import java.sql.Connection;
 
-import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -26,7 +25,7 @@ public class DataSourceAspect {
 
 		Connection connection = (Connection) point.proceed();
 
-		if (!StringUtils.isBlank(TxTaskLocal.current())) {
+		if (TxTaskLocal.current() != null) {
 			logger.debug("get dsp connection control ----->");
 			connection = new DspConnection(connection);
 		}

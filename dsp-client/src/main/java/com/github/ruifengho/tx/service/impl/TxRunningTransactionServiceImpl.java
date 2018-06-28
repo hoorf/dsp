@@ -1,8 +1,5 @@
 package com.github.ruifengho.tx.service.impl;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import javax.annotation.Resource;
 
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -14,7 +11,6 @@ import com.github.ruifengho.DspConstants;
 import com.github.ruifengho.aop.DspTxTransactionAopInfo;
 import com.github.ruifengho.modal.TxGroup;
 import com.github.ruifengho.modal.TxTask;
-import com.github.ruifengho.task.TaskRunner;
 import com.github.ruifengho.tx.service.TransactionService;
 import com.github.ruifengho.tx.service.TxManagerService;
 
@@ -31,32 +27,19 @@ public class TxRunningTransactionServiceImpl implements TransactionService {
 
 		TxTask txTask = TxGroup.createTxTask(groupId);
 
-		txTask.setRunner(new TaskRunner() {
-			@Override
-			public Object run(Object... objects) throws Throwable {
-				Object result = null;
-				int state = DspConstants.STATE_ROLLBACK;
-				try {
-					result = point.proceed();
-					state = DspConstants.STATE_COMMIT;
-				} catch (Exception e) {
-					state = rollbackException(e, info);
-					throw e;
-				}
-				final int timeState = state;
-				new Timer().schedule(new TimerTask() {
-					@Override
-					public void run() {
-						txManagerService.closeTransactionGroup(groupId, txTask.getTaskId(), timeState);
-					}
-				}, 1000);
-				return result;
-			}
-		});
 		try {
 			logger.debug("开始执行");
-			txTask.runAndWait();
-			return txTask.getResultObj();
+			Object result = null;
+			int state = DspConstants.STATE_ROLLBACK;
+			try {
+				result = point.proceed();
+				state = DspConstants.STATE_COMMIT;
+			} catch (Exception e) {
+				state = rollbackException(e, info);
+				throw e;
+			}
+			txManagerService.closeTransactionGroup(groupId, txTask.getTaskId(), state);
+			return result;
 		} catch (Exception e) {
 			throw e;
 		} finally {

@@ -13,7 +13,6 @@ import com.github.ruifengho.aop.DspTxTransactionAopInfo;
 import com.github.ruifengho.modal.TxGroup;
 import com.github.ruifengho.modal.TxTask;
 import com.github.ruifengho.modal.TxTaskLocal;
-import com.github.ruifengho.task.TaskRunner;
 import com.github.ruifengho.tx.service.TransactionService;
 import com.github.ruifengho.tx.service.TxManagerService;
 import com.github.ruifengho.util.RandomUtils;
@@ -32,35 +31,27 @@ public class TxStartTransactionServiceImpl implements TransactionService {
 		groupId = StringUtils.isEmpty(groupId) ? RandomUtils.randomUUID() : groupId;
 
 		logger.debug("创建了 group【{}】", groupId);
-		TxTaskLocal.current(groupId);
+
 		TxTask txTask = TxGroup.createTxTask(groupId);
 
 		txManagerService.createTransactionGroup(groupId);
-
-		final String group = groupId;
-		txTask.setRunner(new TaskRunner() {
-			@Override
-			public Object run(Object... objects) throws Throwable {
-				Object result = null;
-				int state = DspConstants.STATE_ROLLBACK;
-				try {
-					result = point.proceed();
-					state = DspConstants.STATE_COMMIT;
-				} catch (Exception e) {
-					state = rollbackException(e, info);
-					throw e;
-				}
-				txManagerService.closeTransactionGroup(group, txTask.getTaskId(), state);
-				return result;
-			}
-		});
+		int state = DspConstants.STATE_ROLLBACK;
 		try {
 			logger.debug("开始执行");
-			txTask.runAndWait();
-			return txTask.getResultObj();
+			Object result = null;
+			try {
+				result = point.proceed();
+				state = DspConstants.STATE_COMMIT;
+			} catch (Exception e) {
+				state = rollbackException(e, info);
+				throw e;
+			}
+			txManagerService.closeTransactionGroup(groupId, txTask.getTaskId(), state);
+			return result;
 		} catch (Exception e) {
 			throw e;
 		} finally {
+			txManagerService.notifyTransaction(groupId, state);
 			logger.debug("<---end start transaction");
 		}
 	}

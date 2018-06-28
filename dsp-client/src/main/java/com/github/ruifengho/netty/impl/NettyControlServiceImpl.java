@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.JSONObject;
 import com.github.ruifengho.DspConstants;
 import com.github.ruifengho.modal.DspAction;
 import com.github.ruifengho.modal.TxGroup;
@@ -52,7 +51,7 @@ public class NettyControlServiceImpl implements NettyControlService {
 				if (txTask != null) {
 					if (txTask.getTaskId().equals(dspAction.getParams().getString("taskId"))) {
 						txTask.setState(dspAction.getState());
-						txTask.signalTask();
+						// txTask.signalTask();
 					}
 				}
 				break;
@@ -61,18 +60,38 @@ public class NettyControlServiceImpl implements NettyControlService {
 				TxTask txTask = TxGroup.getTxTask(dspAction.getGroupId());
 				if (txTask != null) {
 					Connection connection = ConnectionManager.get(txTask);
-					try {
-						if (dspAction.getState() == DspConstants.STATE_COMMIT) {
-							connection.commit();
-						} else {
-							connection.rollback();
+					if (connection != null) {
+						try {
+							if (dspAction.getState() == DspConstants.STATE_ROLLBACK) {
+								connection.rollback();
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
+							log.debug("rollback connection for group【{}】", dspAction.getGroupId());
 						}
-					} catch (Exception e) {
-						log.debug("rollback connection for group【{}】", dspAction.getGroupId());
 					}
 
 				}
 				break;
+			}
+			case DspConstants.ACTION_NOTIFY: {
+				TxTask txTask = TxGroup.getTxTask(dspAction.getGroupId());
+				if (txTask != null) {
+					Connection connection = ConnectionManager.get(txTask);
+					if (connection != null) {
+						try {
+							if (dspAction.getState() == DspConstants.STATE_COMMIT) {
+								connection.commit();
+							} else {
+								connection.rollback();
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
+							log.debug("rollback connection for group【{}】", dspAction.getGroupId());
+						}
+					}
+
+				}
 			}
 			default:
 				break;

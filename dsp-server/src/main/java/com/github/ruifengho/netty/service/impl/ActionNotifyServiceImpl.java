@@ -24,9 +24,9 @@ public class ActionNotifyServiceImpl implements ActionService {
 		if (CollectionUtils.isNotEmpty(groups)) {
 			action.setType(DspConstants.MSG_TYPE_SERVER);
 			action.setAction(DspConstants.ACTION_NOTIFY);
-
+			
 			TxManagerPool.setState(action.getGroupId(), action.getState());
-
+			
 			groups.forEach(ct -> {
 				SocketUtils.sendMsg(ct, action.toString());
 			});

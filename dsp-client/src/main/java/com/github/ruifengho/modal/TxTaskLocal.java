@@ -1,13 +1,13 @@
 package com.github.ruifengho.modal;
 
 public class TxTaskLocal {
-	static final ThreadLocal<String> store = new InheritableThreadLocal<>();
+	static final ThreadLocal<TxTask> store = new InheritableThreadLocal<>();
 
-	public static void current(String groupId) {
+	public static void current(TxTask groupId) {
 		store.set(groupId);
 	}
 
-	public static String current() {
+	public static TxTask current() {
 		return store.get();
 	}
 

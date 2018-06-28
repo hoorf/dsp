@@ -33,7 +33,7 @@ public class TxManagerServiceImpl implements TxManagerService {
 	@Override
 	public int notifyTransaction(String groupId, int state) {
 		DspAction dspAction = new DspAction(DspConstants.MSG_TYPE_CLIENT, DspConstants.ACTION_NOTIFY, groupId);
-		dspAction.getParams().put("state", state);
+		dspAction.setState(state);
 		try {
 			SocketManager.getInstance().sendMsg(dspAction.toString());
 		} catch (Exception e) {

@@ -1,7 +1,6 @@
 package com.github.ruifengho.netty.handler;
 
-import static com.github.ruifengho.DspConstants.ACTION_HEART;
-import static com.github.ruifengho.DspConstants.MSG_TYPE_CLIENT;
+import static com.github.ruifengho.DspConstants.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

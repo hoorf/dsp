@@ -12,12 +12,14 @@ public class TxManagerServiceImpl implements TxManagerService {
 
 	public void createTransactionGroup(String groupId) {
 		DspAction dspAction = new DspAction(DspConstants.MSG_TYPE_CLIENT, DspConstants.ACTION_CREATE_TX_GROUP, groupId);
+		dspAction.setState(DspConstants.STATE_COMMIT);
 		SocketManager.getInstance().sendMsg(dspAction.toString());
 	}
 
 	@Override
 	public int closeTransactionGroup(String groupId, String taskId, int state) {
-		DspAction dspAction = new DspAction(DspConstants.MSG_TYPE_CLIENT, DspConstants.ACTION_CLOSE_TX_GROUP, groupId);
+		DspAction dspAction = new DspAction(DspConstants.MSG_TYPE_CLIENT, DspConstants.ACTION_UPLOAD_CLIENT_MSG,
+				groupId);
 		dspAction.setState(state);
 		dspAction.getParams().put("taskId", taskId);
 		try {

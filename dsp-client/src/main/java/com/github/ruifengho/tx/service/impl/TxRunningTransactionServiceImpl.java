@@ -1,5 +1,8 @@
 package com.github.ruifengho.tx.service.impl;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import javax.annotation.Resource;
 
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -40,7 +43,13 @@ public class TxRunningTransactionServiceImpl implements TransactionService {
 					state = rollbackException(e, info);
 					throw e;
 				}
-				txManagerService.closeTransactionGroup(groupId, txTask.getTaskId(), state);
+				final int timeState = state;
+				new Timer().schedule(new TimerTask() {
+					@Override
+					public void run() {
+						txManagerService.closeTransactionGroup(groupId, txTask.getTaskId(), timeState);
+					}
+				}, 1000);
 				return result;
 			}
 		});

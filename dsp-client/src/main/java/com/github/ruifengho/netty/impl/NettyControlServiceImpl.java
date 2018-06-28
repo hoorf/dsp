@@ -47,7 +47,7 @@ public class NettyControlServiceImpl implements NettyControlService {
 		if (DspConstants.MSG_TYPE_SERVER.equals(dspAction.getType())) {
 
 			switch (dspAction.getAction()) {
-			case DspConstants.ACTION_NOTIFY: {
+			case DspConstants.ACTION_UPLOAD_CLIENT_MSG: {
 				TxTask txTask = TxGroup.getTxTask(dspAction.getGroupId());
 				if (txTask != null) {
 					if (txTask.getTaskId().equals(dspAction.getParams().getString("taskId"))) {
@@ -72,10 +72,6 @@ public class NettyControlServiceImpl implements NettyControlService {
 					}
 
 				}
-				break;
-			}
-			case DspConstants.ACTION_UPLOAD_CLIENT_MSG: {
-				log.debug(json);
 				break;
 			}
 			default:

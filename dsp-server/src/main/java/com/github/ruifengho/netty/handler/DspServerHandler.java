@@ -5,7 +5,6 @@ import java.util.concurrent.ExecutorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.fastjson.JSONObject;
 import com.github.ruifengho.DspConstants;
 import com.github.ruifengho.modal.DspAction;
 import com.github.ruifengho.netty.service.ActionService;
@@ -67,6 +66,7 @@ public class DspServerHandler extends ChannelInboundHandlerAdapter {
 		String result = service.execute(ctx, dspAction);
 
 		DspAction response = new DspAction();
+		response.setGroupId(dspAction.getGroupId());
 		response.setAction(dspAction.getAction());
 		response.getParams().put("response", result);
 		response.setType(DspConstants.MSG_TYPE_SERVER);

@@ -14,7 +14,7 @@ import com.github.ruifengho.util.SocketUtils;
 
 import io.netty.channel.ChannelHandlerContext;
 
-@Service(DspConstants.ACTION_CLOSE_TX_GROUP)
+@Service(DspConstants.ACTION_NOTIFY)
 public class ActionNotifyServiceImpl implements ActionService {
 
 	@Override

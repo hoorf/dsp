@@ -28,7 +28,7 @@ public class DspRestTemplateInterceptor implements RequestInterceptor {
 		String groupId = request.getHeader(DspConstants.DSP_TX_GROUP);
 		log.debug("调用client", groupId);
 		if (StringUtils.isBlank(groupId)) {
-			groupId = TxTaskLocal.current();
+			groupId = TxTaskLocal.current().getGroupId();
 		}
 
 		if (groupId != null) {

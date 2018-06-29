@@ -28,11 +28,12 @@ public class DspServerController {
 		config.setHeart(configReader.getHeart());
 		config.setPort(configReader.getPort());
 		config.setHost(configReader.getHost());
+		
 		return JSONObject.toJSONString(config);
 	}
 	@RequestMapping("getConnect")
 	public String getConnect() {
-		Queue<ChannelHandlerContext> queue = ChannelManager.getInstance().getChannelList();
+		Queue<ChannelHandlerContext> queue = null;
 		List<String> collect = queue.stream().map(x->x.channel().remoteAddress().toString()).collect(Collectors.toList());
 		return JSONObject.toJSONString(collect);
 	}

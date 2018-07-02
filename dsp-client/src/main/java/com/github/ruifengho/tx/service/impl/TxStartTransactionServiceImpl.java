@@ -33,6 +33,7 @@ public class TxStartTransactionServiceImpl implements TransactionService {
 		logger.debug("创建了 group【{}】", groupId);
 
 		TxTask txTask = TxGroup.createTxTask(groupId);
+		TxTaskLocal.current(txTask);
 
 		txManagerService.createTransactionGroup(groupId);
 		int state = DspConstants.STATE_ROLLBACK;

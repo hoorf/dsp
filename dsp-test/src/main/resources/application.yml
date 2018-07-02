@@ -3,8 +3,12 @@ dsp:
     address: http://127.0.0.1:3333/dsp
 spring:
   application:
-    name: demo    
-    
+    name: demo
+  datasource:
+    url: jdbc:mysql://localhost:3306/test
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: root
 logging:
   level:
     com.github.ruifengho: DEBUG

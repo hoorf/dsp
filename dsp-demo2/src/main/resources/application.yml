@@ -5,6 +5,11 @@ dsp:
 spring:
   application:
     name: demo2
+  datasource:
+    url: jdbc:mysql://localhost:3306/test
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: root
     
 server:
   port: 8089   
@@ -12,3 +17,7 @@ server:
 logging:
   level:
     com.github.ruifengho: DEBUG
+    javax.sql: DEBUG
+    java.sql: debug
+    org.springframework.jdbc.core: DEBUG
+    

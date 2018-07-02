@@ -1,14 +1,21 @@
 dsp:
   server:
     address: http://127.0.0.1:3333/dsp
-
+    
 spring:
   application:
     name: demo1
+  datasource:
+    url: jdbc:mysql://localhost:3306/test
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: root
     
 server:
-  port: 8088       
-    
+  port: 8088
 logging:
   level:
     com.github.ruifengho: DEBUG
+    javax.sql: DEBUG
+    java.sql: debug
+    org.springframework.jdbc.core: DEBUG

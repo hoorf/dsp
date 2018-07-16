@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import com.github.ruifengho.DspConstants;
 import com.github.ruifengho.modal.DspAction;
 import com.github.ruifengho.netty.service.ActionService;
+import com.github.ruifengho.netty.utils.ChannelManager;
 import com.github.ruifengho.tx.TxManagerPool;
 
 import io.netty.channel.ChannelHandlerContext;

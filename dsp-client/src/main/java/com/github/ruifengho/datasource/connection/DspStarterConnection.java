@@ -21,15 +21,21 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.github.ruifengho.DspConstants;
 import com.github.ruifengho.modal.DspAction;
-import com.github.ruifengho.modal.TxGroup;
 import com.github.ruifengho.modal.TxTask;
 import com.github.ruifengho.modal.TxTaskLocal;
 import com.github.ruifengho.utils.ConnectionManager;
 import com.github.ruifengho.utils.SocketManager;
 
 public class DspStarterConnection implements Connection {
+	
+	
+	private static final Logger logger = LoggerFactory.getLogger(DspStarterConnection.class);
+
 
 	private Connection connection;
 
@@ -70,6 +76,7 @@ public class DspStarterConnection implements Connection {
 
 	@Override
 	public void commit() throws SQLException {
+		logger.debug("begin commit");
 
 		if (TxTaskLocal.current() != null) {
 			TxTask task = TxTaskLocal.current();
@@ -97,6 +104,7 @@ public class DspStarterConnection implements Connection {
 
 			}
 		}
+		logger.debug("end commit");
 
 	}
 

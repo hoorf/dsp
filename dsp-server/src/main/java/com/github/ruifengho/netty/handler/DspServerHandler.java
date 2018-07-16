@@ -2,6 +2,7 @@ package com.github.ruifengho.netty.handler;
 
 import java.util.concurrent.ExecutorService;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,13 +37,13 @@ public class DspServerHandler extends ChannelInboundHandlerAdapter {
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		super.channelActive(ctx);
-//		ChannelManager.getInstance().put(ctx);
+		// ChannelManager.getInstance().put(ctx);
 	}
 
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
 		super.channelInactive(ctx);
-//		ChannelManager.getInstance().remove(ctx);
+		// ChannelManager.getInstance().remove(ctx);
 	}
 
 	@Override
@@ -61,7 +62,9 @@ public class DspServerHandler extends ChannelInboundHandlerAdapter {
 
 		ActionService service = nettyService.getService(dspAction.getAction());
 
-//		ChannelManager.getInstance().group(dspAction.getGroupId(), ctx);
+		if (StringUtils.isNotBlank(dspAction.getGroupId())) {
+			ChannelManager.getInstance().putGroup(dspAction.getGroupId(), ctx);
+		}
 
 		String result = service.execute(ctx, dspAction);
 
@@ -72,7 +75,9 @@ public class DspServerHandler extends ChannelInboundHandlerAdapter {
 		response.setType(DspConstants.MSG_TYPE_SERVER);
 		response.setState(dspAction.getState());
 
-		SocketUtils.sendMsg(ctx, response.toString());
+		if (!DspConstants.ACTION_NOTIFY.equals(dspAction.getAction())) {
+			SocketUtils.sendMsg(ctx, response.toString());
+		}
 
 	}
 

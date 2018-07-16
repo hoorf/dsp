@@ -11,6 +11,7 @@ import com.github.ruifengho.DspConstants;
 import com.github.ruifengho.aop.DspTxTransactionAopInfo;
 import com.github.ruifengho.modal.TxGroup;
 import com.github.ruifengho.modal.TxTask;
+import com.github.ruifengho.modal.TxTaskLocal;
 import com.github.ruifengho.tx.service.TransactionService;
 import com.github.ruifengho.tx.service.TxManagerService;
 
@@ -26,6 +27,7 @@ public class TxRunningTransactionServiceImpl implements TransactionService {
 	public Object execute(ProceedingJoinPoint point, String groupId, DspTxTransactionAopInfo info) throws Throwable {
 
 		TxTask txTask = TxGroup.createTxTask(groupId);
+		TxTaskLocal.current(txTask);
 
 		try {
 			logger.debug("开始执行");

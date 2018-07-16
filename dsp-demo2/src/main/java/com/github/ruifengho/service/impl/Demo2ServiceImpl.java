@@ -3,6 +3,7 @@ package com.github.ruifengho.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.github.ruifengho.service.Demo2Service;
 

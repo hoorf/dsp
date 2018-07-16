@@ -1,5 +1,8 @@
 package com.github.ruifengho.tx.service.impl;
 
+import javax.annotation.Resource;
+
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import com.github.ruifengho.DspConstants;
@@ -9,6 +12,9 @@ import com.github.ruifengho.utils.SocketManager;
 
 @Service
 public class TxManagerServiceImpl implements TxManagerService {
+
+	@Resource
+	private Environment env;
 
 	public void createTransactionGroup(String groupId) {
 		DspAction dspAction = new DspAction(DspConstants.MSG_TYPE_CLIENT, DspConstants.ACTION_CREATE_TX_GROUP, groupId);
@@ -21,7 +27,7 @@ public class TxManagerServiceImpl implements TxManagerService {
 		DspAction dspAction = new DspAction(DspConstants.MSG_TYPE_CLIENT, DspConstants.ACTION_UPLOAD_CLIENT_MSG,
 				groupId);
 		dspAction.setState(state);
-		dspAction.getParams().put("taskId", taskId);
+		dspAction.getParams().put("taskId", env.getProperty("spring.application.name") + taskId);
 		try {
 			SocketManager.getInstance().sendMsg(dspAction.toString());
 		} catch (Exception e) {

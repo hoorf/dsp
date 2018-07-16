@@ -75,14 +75,17 @@ public class NettyControlServiceImpl implements NettyControlService {
 				break;
 			}
 			case DspConstants.ACTION_NOTIFY: {
+				log.debug("接受到全局通知  for group【{}】", dspAction.toString());
 				TxTask txTask = TxGroup.getTxTask(dspAction.getGroupId());
 				if (txTask != null) {
 					Connection connection = ConnectionManager.get(txTask);
 					if (connection != null) {
 						try {
 							if (dspAction.getState() == DspConstants.STATE_COMMIT) {
+								log.debug(" commit for group【{}】", dspAction.getGroupId());
 								connection.commit();
 							} else {
+								log.debug(" rollback for group【{}】", dspAction.getGroupId());
 								connection.rollback();
 							}
 						} catch (Exception e) {

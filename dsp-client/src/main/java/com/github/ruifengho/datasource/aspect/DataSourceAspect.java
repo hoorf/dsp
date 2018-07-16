@@ -28,6 +28,7 @@ public class DataSourceAspect {
 		if (TxTaskLocal.current() != null) {
 			logger.debug("get dsp connection control ----->");
 			connection = new DspConnection(connection);
+			connection.setAutoCommit(false);
 		}
 
 		logger.debug("connection-->" + connection);

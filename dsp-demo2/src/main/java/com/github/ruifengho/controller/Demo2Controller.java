@@ -1,6 +1,7 @@
 package com.github.ruifengho.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,6 +16,7 @@ public class Demo2Controller {
 
 	@RequestMapping("/demo2/client")
 	@DspTxTransaction
+	@Transactional 
 	public void excute() {
 		demo2Service.excute();
 	}

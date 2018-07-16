@@ -21,15 +21,19 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.github.ruifengho.DspConstants;
 import com.github.ruifengho.modal.DspAction;
-import com.github.ruifengho.modal.TxGroup;
 import com.github.ruifengho.modal.TxTask;
 import com.github.ruifengho.modal.TxTaskLocal;
 import com.github.ruifengho.utils.ConnectionManager;
 import com.github.ruifengho.utils.SocketManager;
 
 public class DspConnection implements Connection {
+
+	private static final Logger logger = LoggerFactory.getLogger(DspConnection.class);
 
 	private Connection connection;
 
@@ -64,18 +68,23 @@ public class DspConnection implements Connection {
 
 	@Override
 	public void close() throws SQLException {
-		connection.close();
+		if (TxTaskLocal.current() == null) {
+			logger.debug("数据源关闭了 ");
+			connection.close();
+		}
 
 	}
 
 	@Override
 	public void commit() throws SQLException {
+		System.err.println("begin commit");
+		logger.debug("begin commit");
 		if (TxTaskLocal.current() != null) {
 			TxTask task = TxTaskLocal.current();
 			if (task == null) {
 				connection.commit();
 			} else {
-
+				logger.debug("wait commit");
 				ConnectionManager.put(task, connection);
 
 				DspAction dspAction = new DspAction(DspConstants.MSG_TYPE_CLIENT, DspConstants.ACTION_CHECK_TX_GROUP,
@@ -83,6 +92,7 @@ public class DspConnection implements Connection {
 				boolean flag = false;
 				LocalDateTime begin = LocalDateTime.now();
 				do {
+					logger.debug("wait wait wait wait");
 					try {
 						SocketManager.getInstance().sendMsg(dspAction.toString());
 					} catch (Exception e) {
@@ -96,6 +106,8 @@ public class DspConnection implements Connection {
 
 			}
 		}
+		logger.debug("end commit");
+		System.err.println("end commit");
 	}
 
 	@Override

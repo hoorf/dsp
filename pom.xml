@@ -12,8 +12,6 @@
 		<module>dsp-test</module>
 		<module>dsp-common</module>
 		<module>dsp-springcloud</module>
-		<module>dsp-demo1</module>
-		<module>dsp-demo2</module>
 	</modules>
 
 	<parent>

@@ -15,7 +15,6 @@ public class Demo1ServiceImpl implements Demo1Service {
 	public void excute() {
 		System.err.println("demo1 run");
 		demo2Client.excute();
-		float s=1/0;
 		System.err.println("demo1 执行完了");
 
 	}

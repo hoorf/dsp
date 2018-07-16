@@ -105,6 +105,8 @@ public class DspConnection implements Connection {
 				} while (flag);
 
 			}
+		} else {
+			connection.commit();
 		}
 		logger.debug("end commit");
 		System.err.println("end commit");

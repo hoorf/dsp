@@ -95,6 +95,7 @@ public class NettyControlServiceImpl implements NettyControlService {
 					}
 
 				}
+				break;
 			}
 			default:
 				break;

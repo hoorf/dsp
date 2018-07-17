@@ -21,7 +21,6 @@ import com.github.ruifengho.util.RandomUtils;
 public class TxStartTransactionServiceImpl implements TransactionService {
 
 	private static final Logger logger = LoggerFactory.getLogger(TxStartTransactionServiceImpl.class);
-	
 
 	@Resource
 	private TxManagerService txManagerService;

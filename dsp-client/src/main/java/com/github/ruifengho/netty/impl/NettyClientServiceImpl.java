@@ -49,7 +49,7 @@ public class NettyClientServiceImpl implements NettyClientService {
 
 		// 加载配置
 		configLoader.load();
-		int heart = Constants.config.getHeart();
+		//int heart = Constants.config.getHeart();
 		String host = Constants.config.getHost();
 		int port = Constants.config.getPort();
 

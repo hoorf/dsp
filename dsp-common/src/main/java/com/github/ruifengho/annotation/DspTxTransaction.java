@@ -7,10 +7,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.springframework.transaction.annotation.Transactional;
+
 @Documented
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
+@Transactional
 public @interface DspTxTransaction {
 
 	boolean isStart() default false;

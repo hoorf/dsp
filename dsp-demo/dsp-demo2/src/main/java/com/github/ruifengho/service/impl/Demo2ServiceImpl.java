@@ -18,6 +18,7 @@ public class Demo2ServiceImpl implements Demo2Service {
 		System.err.println("demo2 run");
 		System.err.println("demo2 save");
 		template.update("insert into t_test(name) values (?)", "demo2");
+		System.out.println(1/0);
 		System.err.println("demo2 run end");
 	}
 

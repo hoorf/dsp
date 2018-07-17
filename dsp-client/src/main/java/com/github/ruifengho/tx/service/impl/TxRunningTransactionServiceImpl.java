@@ -38,7 +38,9 @@ public class TxRunningTransactionServiceImpl implements TransactionService {
 				state = DspConstants.STATE_COMMIT;
 			} catch (Exception e) {
 				state = rollbackException(e, info);
-				throw e;
+				if (DspConstants.STATE_ROLLBACK == state) {
+					throw e;
+				}
 			}
 			txManagerService.closeTransactionGroup(groupId, txTask.getTaskId(), state);
 			return result;

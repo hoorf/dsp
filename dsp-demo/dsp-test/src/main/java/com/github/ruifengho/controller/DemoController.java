@@ -24,6 +24,7 @@ public class DemoController {
 		System.err.println("test sql begin");
 		testService.run();
 		System.err.println("test sql end");
+//		System.out.println(1/0);
 		System.err.println("执行完了");
 	}
 }

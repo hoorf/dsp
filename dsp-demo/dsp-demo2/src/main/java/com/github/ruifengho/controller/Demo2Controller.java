@@ -14,7 +14,7 @@ public class Demo2Controller {
 	private Demo2Service demo2Service;
 
 	@RequestMapping("/demo2/client")
-	@DspTxTransaction
+	@DspTxTransaction(noRollbackFor = ArithmeticException.class)
 	public void excute() {
 		demo2Service.excute();
 	}

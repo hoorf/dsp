@@ -314,11 +314,13 @@ public class DspConnection implements Connection {
 
 	@Override
 	public void rollback() throws SQLException {
+		logger.debug("dsp connect rollback");
 		connection.rollback();
 	}
 
 	@Override
 	public void rollback(Savepoint arg0) throws SQLException {
+		logger.debug("dsp connect rollback");
 		connection.rollback(arg0);
 	}
 
